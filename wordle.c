@@ -1,5 +1,9 @@
+#include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 
 int main(void) {
     /*
@@ -26,31 +30,87 @@ int main(void) {
         5. Time limit
         6. Do everything in C (no pre-generated list)
     */
-    char *target = "shirk";
+    
+    #define NUM_WORDS 20 
+    #define WORD_SIZE 50
+    #define NUM_OF_CHANCE 6
+    #define MAX_LETTER 26
 
-    for (int i = 0; i < 6; i++)  {
-        char guess[100];
-        printf("Enter your name: ");
-        scanf("%s", guess);
+    char userInput[50];
 
-        if (strlen(guess) != 5) {
-            printf("that is not 5 character, please do it again.\n");
+    do {
+        /* open word file */
+        FILE *file = fopen("/home/zshuai/eighth-day/L4-group2/word-dict.txt", "r");
+        if (file == NULL) {
+            perror("Unable to find the word list");
+            exit(EXIT_FAILURE);
         }
+        /* adding word to wordList array */
+        char word[WORD_SIZE];
+        char wordList[NUM_WORDS][WORD_SIZE];
+        int i = 0;
+        char secret_word[WORD_SIZE];
+        while (fgets(word, sizeof(word), file) != NULL) {
+            strcpy(wordList[i], word);
+            i++;
+        }
+        fclose(file);
+        /* pick one word randomly */
+        int num = (rand() % (NUM_WORDS + 1));
+        strcpy(secret_word, wordList[num]);
 
-        for (int j = 0; j < 5; j++) {
-            if (target[i] == guess[j]) {
-                printf("o");
-            } else if (strchr(target, guess[j]) != NULL) {
-                printf("a");
-            } else {
-                printf("x");
+        char used_words[NUM_OF_CHANCE][WORD_SIZE];
+        int time_guessed = 0;
+
+        /* find out who is playing*/
+        char name[100];
+        printf("Please enter your name: ");
+        scanf("%s", name);
+        printf("Welcome to my wordle game, %s.\n", name);
+
+        for (int i = 0; i < NUM_OF_CHANCE; i++)  {
+            char guess[100];
+            printf("Enter your Guess: ");
+            scanf("%s", guess);
+
+            if (strlen(guess) != 5) {
+                printf("that is not 5 character, please do it again.\n");
+                continue;
+            }
+
+            for (int j = 0; j < 5; j++) { /* iterate each char in the word*/
+                if (ispunct(guess[j]) > 0 || isupper(guess[j]) > 0 || isdigit(guess[j])) {
+                        printf("Please enter a valid word, No Punctuation, UpperCase or LowerCase!");
+                        break;
+                    }
+                if (secret_word[j] == guess[j]) { /* check the letter if in the right spot*/
+                    printf("o");
+                    /* search first occurence of letter if existed in target str */
+                } else if (strchr(secret_word, guess[j]) != NULL) {
+                    printf("a");
+                } else {
+                    printf("x");
+                }
+            }
+            time_guessed++;
+            printf("\n");
+            strcpy(used_words[i], guess);
+            printf("Used words: ");
+            int k = i + 1;
+            while (k > 0) {
+                printf("%s ", used_words[k - 1]);
+                k--;
+            }
+            printf("\n");
+            printf("You have guessed %d times, you still have %d times left", time_guessed, NUM_OF_CHANCE - time_guessed);
+            printf("\n");
+            if (strncmp(secret_word, guess, 5) == 0) {
+                printf("Nice job, you win!!!\n");
+                break;
             }
         }
-        printf("\n");
-
-         if (strncmp(target, guess, 5) == 0) {
-            printf("you win!\n");
-            break;
-        }
-    }
+        printf("Sorry you lose, you have used all you chances :(\nThe correct word is %s", secret_word);
+        printf("\nWould you like to play again(Y/N)? ");
+        scanf(" %c", userInput);
+    } while (*userInput == 'Y' || *userInput == 'y');
 }
