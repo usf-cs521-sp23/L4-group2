@@ -5,6 +5,23 @@
 #include <string.h>
 #include <sys/types.h>
 
+/* Adding color to output */
+void green () {
+    printf("\033[0;32m");
+}
+
+void yellow () {
+    printf("\033[0;33m");
+}
+
+void red () {
+    printf("\033[1;31m");
+}
+
+void reset () {
+    printf("\033[0m");
+}
+
 int main(void) {
     /*
         Potential Special Features
@@ -26,17 +43,17 @@ int main(void) {
     FILE *user_File;
     int win_time = 0;
     int lose_time = 0;
-
     char name[100];
-        printf("Please enter your name: ");
-        scanf("%s", name);
-        printf("Welcome to my wordle game, %s.\n", name);
-        strcat(name, " game record");
-        user_File = fopen(name, "w");
+
+    printf("Please enter your name: ");
+    scanf("%s", name);
+    printf("Welcome to my wordle game, %s.\n", name);
+    strcat(name, " game record");
+    user_File = fopen(name, "w");
 
     do {
         /* open word file */
-        FILE *file = fopen("/home/tlin52/L4-group2/word-dict.txt", "r");
+        FILE *file = fopen("/home/zshuai/eighth-day/L4-group2/word-dict.txt", "r");
         if (file == NULL) {
             perror("Unable to find the word list");
             exit(EXIT_FAILURE);
@@ -57,8 +74,9 @@ int main(void) {
 
         char used_words[NUM_OF_CHANCE][WORD_SIZE];
         int time_guessed = 0;
+        bool has_winner = false;
 
-        /* find out who is playing*/
+        /* find out who is playing */
         for (int i = 0; i < NUM_OF_CHANCE; i++)  {
             char guess[100];
             printf("Enter your Guess: ");
@@ -69,44 +87,52 @@ int main(void) {
                 continue;
             }
 
-            for (int j = 0; j < 5; j++) { /* iterate each char in the word*/
+            for (int j = 0; j < 5; j++) { /* iterate each char in the word */
                 if (ispunct(guess[j]) > 0 || isupper(guess[j]) > 0 || isdigit(guess[j])) {
                         printf("Please enter a valid word, No Punctuation, UpperCase or LowerCase!");
                         break;
                     }
-                if (secret_word[j] == guess[j]) { /* check the letter if in the right spot*/
+                if (secret_word[j] == guess[j]) { /* check the letter if in the right spot */
+                    green();
                     printf("o");
                     /* search first occurence of letter if existed in target str */
                 } else if (strchr(secret_word, guess[j]) != NULL) {
+                    yellow();
                     printf("a");
                 } else {
+                    red();
                     printf("x");
                 }
+                reset();
             }
             time_guessed++;
             printf("\n");
             strcpy(used_words[i], guess);
             printf("Used words: ");
             int k = i + 1;
+            int w = 0;
             while (k > 0) {
-                printf("%s ", used_words[k - 1]);
+                printf("%s ", used_words[w]);
+                w++;
                 k--;
             }
-            fprintf(user_File, "\nThis is %d time, Used word: %s", time_guessed, used_words[i]);
             printf("\n");
             printf("You have guessed %d times, you still have %d times left", time_guessed, NUM_OF_CHANCE - time_guessed);
             printf("\n");
             if (strncmp(secret_word, guess, 5) == 0) {
                 printf("Nice job, you win!!!\n");
                 win_time += 1;
+                has_winner = true;
                 fprintf(user_File, "win/lose: %d / %d", win_time, lose_time);
                 break;
             }
         }
+        if ((NUM_OF_CHANCE == 6) && (has_winner == false)) {
+            printf("Sorry you lose, you have used all you chances :(\nThe correct word is %s", secret_word);
+        }
         lose_time += 1;
         fprintf(user_File, "\nwin/lose: %d / %d", win_time, lose_time);
-        printf("Sorry you lose, you have used all you chances :(\nThe correct word is %s", secret_word);
-        printf("\nWould you like to play again(Y/N)? ");
+        printf("Would you like to play again(Y/N)? ");
         scanf(" %c", userInput);
         fclose(user_File);
     } while (*userInput == 'Y' || *userInput == 'y');
