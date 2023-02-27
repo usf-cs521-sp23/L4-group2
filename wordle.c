@@ -89,10 +89,17 @@ int main(void) {
         char used_words[NUM_OF_CHANCE][WORD_SIZE];
         time_guessed = 0;
         has_winner = false;
+        int counter;
 
         for (int i = 0; i < NUM_OF_CHANCE; i++)  {
-            printf("Enter your Guess: ");
-            scanf("%s", guess);
+            counter = 5;
+            printf("Enter your Guess:\n ");
+            while (counter != 0) {
+                printf("\t%d\n", counter);
+                counter--;
+                sleep(1);
+            }
+            scanf("\n%s", guess);
 
             if (strlen(guess) != 5) {
                 printf("that is not 5 character, please do it again.\n");
