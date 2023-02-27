@@ -117,6 +117,7 @@ int main(void) {
                 k--;
             }
             printf("\n");
+            fprintf(user_File, "This is %d time, Used word: %s\n", time_guessed, used_words[i]);
             printf("You have guessed %d times, you still have %d times left", time_guessed, NUM_OF_CHANCE - time_guessed);
             printf("\n");
             if (strncmp(secret_word, guess, 5) == 0) {
@@ -128,7 +129,7 @@ int main(void) {
             }
         }
         if ((NUM_OF_CHANCE == 6) && (has_winner == false)) {
-            printf("Sorry you lose, you have used all you chances :(\nThe correct word is %s", secret_word);
+            printf("Sorry you lose, you have used all you chances :(\nThe correct word is: %s", secret_word);
         }
         lose_time += 1;
         fprintf(user_File, "\nwin/lose: %d / %d", win_time, lose_time);
