@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+#include <unistd.h>
+#include <time.h>
 
 /* Adding color to output */
 void green () {
@@ -130,19 +132,38 @@ int main(void) {
             fprintf(user_File, "This is %d time, Used word: %s\n", time_guessed, used_words[i]);
             printf("You have guessed %d times, you still have %d times left\n", time_guessed, NUM_OF_CHANCE - time_guessed);
             if (strncmp(secret_word, guess, 5) == 0) {
-                printf("Nice job, you win!!!\n");
+                printf("------------------------\n");
+                printf("< Nice job, you win!!! >\n");
+                printf("------------------------\n");
                 win_time += 1;
                 has_winner = true;
                 time_tried++;
                 fprintf(user_File, "win/lose: %d / %d\n", win_time, lose_time);
+                printf(
+                                "        \\   ^__^\n"
+                                "         \\  (@@)\\_______\n"
+                                "            (__)\\       )\\/\\\n"
+                                "               ||----w |\n"
+                                "               ||     ||\n"
+                );
                 break;
             }
         }
         if ((NUM_OF_CHANCE == 6) && (has_winner == false)) {
-            printf("Sorry you lose, you have used all you chances :(\nThe correct word is: %s", secret_word);
+            printf("The correct word is: %s", secret_word);
+            printf("----------------------------------------------------\n");
+            printf("< Sorry you lose, you have used all you chances :( >\n");
+            printf("----------------------------------------------------\n");
             lose_time += 1;
             time_tried++;
             fprintf(user_File, "\nwin/lose: %d / %d\n", win_time, lose_time);
+            printf(
+                                "        \\   ^__^\n"
+                                "         \\  (**)\\_______\n"
+                                "            (__)\\       )\\/\\\n"
+                                "               ||----w |\n"
+                                "               ||     ||\n"
+                );
         }
         printf("Would you like to play again(Y/N)? ");
         scanf(" %s", userInput);
