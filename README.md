@@ -15,7 +15,7 @@ run `cc wordle.c` then `./a.out`
     * also will display how many times you have guess and how many more change have left.
     * if you fomulate the correct answer within 6 guesses. you win and will prompt you if you want to play again. you will see cowsay :)
     * otherwise if you cannot come up with the correct word within 6 guesses, you lose. you will see cowsay as well and ask you if want to play again.
-    * last, once you start play the game you should see a text file created with the name format `{$user} game record`. It will display how many time you have guessed and whats the word you have guessed. within the created text file, you should also see a score board indicating win/lose every time. Noted that in each game if you chose to play again, the text file will not be overwritten, it will be appended at the end with the newest game score. However when the game is ended and a new game started with even same user, the text file will be re-created with empty content, the previous score board will be erased.
+    * last, once you start play the game you should see a text file created with the name format `{$user} game record` under the root directory. It will display how many time you have guessed and whats the word you have guessed. within the created text file, you should also see a score board indicating win/lose every time. Noted that in each game if you chose to play again, the text file will not be overwritten, it will be appended at the end with the newest game score. However when the game is ended and a new game started with even same user, the text file will be re-created with empty content, the previous score board will be erased.
 
 ===========================================
  - Happy playing!!!

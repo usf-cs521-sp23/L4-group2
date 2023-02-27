@@ -59,7 +59,7 @@ int main(void) {
 
     do {
         /* open word file */
-        FILE *file = fopen("/home/zshuai/eighth-day/L4-group2/word-dict.txt", "r");
+        FILE *file = fopen("./word-dict.txt", "r");
         if (file == NULL) {
             perror("Unable to find the word list");
             exit(EXIT_FAILURE);
