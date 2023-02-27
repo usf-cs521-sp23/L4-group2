@@ -1,7 +1,6 @@
 # Wordle!
-====================================
 * Below is the simple usage of Wordle game <br />
-====================================
+=================================
 
 * Build and Run
 run `cc wordle.c` then `./a.out`
