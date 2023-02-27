@@ -7,20 +7,6 @@
 
 int main(void) {
     /*
-     Requirements:
-        1. Find out who is playing the game
-        2. Open a text file with words to use (maybe in /usr/share/dict ?)
-            * Make a word list from those words (only 5 letters, no special chars)
-        3. Pick one word randomly
-        4. Read guesses on standard input (stdin) -- but only give them 6 chances
-            * Check if it's actually a valid word, no uppercase, punctuation
-            * Check if the letter is in the right spot, or at least in the word
-        5. Let user know which letters have already been used
-            * Track which letters were wrong
-        6. Have some way of showing what was right/wrong, how many times guessed, how many left
-        7. Either print that they win or lose (with personalization, e.g., "You are terrible Matthew")
-        8. Ask them if they want to play again
-
         Potential Special Features
         1. Stats (wins, losses, how many guesses, streaks) / previous results
             * Print to text file for bragging rights
@@ -37,10 +23,20 @@ int main(void) {
     #define MAX_LETTER 26
 
     char userInput[50];
+    FILE *user_File;
+    int win_time = 0;
+    int lose_time = 0;
+
+    char name[100];
+        printf("Please enter your name: ");
+        scanf("%s", name);
+        printf("Welcome to my wordle game, %s.\n", name);
+        strcat(name, " game record");
+        user_File = fopen(name, "w");
 
     do {
         /* open word file */
-        FILE *file = fopen("/home/zshuai/eighth-day/L4-group2/word-dict.txt", "r");
+        FILE *file = fopen("/home/tlin52/L4-group2/word-dict.txt", "r");
         if (file == NULL) {
             perror("Unable to find the word list");
             exit(EXIT_FAILURE);
@@ -63,11 +59,6 @@ int main(void) {
         int time_guessed = 0;
 
         /* find out who is playing*/
-        char name[100];
-        printf("Please enter your name: ");
-        scanf("%s", name);
-        printf("Welcome to my wordle game, %s.\n", name);
-
         for (int i = 0; i < NUM_OF_CHANCE; i++)  {
             char guess[100];
             printf("Enter your Guess: ");
@@ -101,16 +92,22 @@ int main(void) {
                 printf("%s ", used_words[k - 1]);
                 k--;
             }
+            fprintf(user_File, "\nThis is %d time, Used word: %s", time_guessed, used_words[i]);
             printf("\n");
             printf("You have guessed %d times, you still have %d times left", time_guessed, NUM_OF_CHANCE - time_guessed);
             printf("\n");
             if (strncmp(secret_word, guess, 5) == 0) {
                 printf("Nice job, you win!!!\n");
+                win_time += 1;
+                fprintf(user_File, "win/lose: %d / %d", win_time, lose_time);
                 break;
             }
         }
+        lose_time += 1;
+        fprintf(user_File, "\nwin/lose: %d / %d", win_time, lose_time);
         printf("Sorry you lose, you have used all you chances :(\nThe correct word is %s", secret_word);
         printf("\nWould you like to play again(Y/N)? ");
         scanf(" %c", userInput);
+        fclose(user_File);
     } while (*userInput == 'Y' || *userInput == 'y');
 }
