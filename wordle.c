@@ -44,12 +44,16 @@ int main(void) {
     int win_time = 0;
     int lose_time = 0;
     char name[100];
+    bool has_winner;;
+    int time_guessed;
+    char guess[100];
+    int time_tried = 0;
 
+    /* find out who is playing and create score borad file */
     printf("Please enter your name: ");
     scanf("%s", name);
     printf("Welcome to my wordle game, %s.\n", name);
     strcat(name, " game record");
-    user_File = fopen(name, "w");
 
     do {
         /* open word file */
@@ -58,6 +62,14 @@ int main(void) {
             perror("Unable to find the word list");
             exit(EXIT_FAILURE);
         }
+
+        /* overwrite or append according unber of tries user used */
+        if (time_tried == 0) {
+            user_File = fopen(name, "w");
+        } else {
+            user_File = fopen(name, "a");
+        }
+
         /* adding word to wordList array */
         char word[WORD_SIZE];
         char wordList[NUM_WORDS][WORD_SIZE];
@@ -73,12 +85,10 @@ int main(void) {
         strcpy(secret_word, wordList[num]);
 
         char used_words[NUM_OF_CHANCE][WORD_SIZE];
-        int time_guessed = 0;
-        bool has_winner = false;
+        time_guessed = 0;
+        has_winner = false;
 
-        /* find out who is playing */
         for (int i = 0; i < NUM_OF_CHANCE; i++)  {
-            char guess[100];
             printf("Enter your Guess: ");
             scanf("%s", guess);
 
@@ -118,23 +128,24 @@ int main(void) {
             }
             printf("\n");
             fprintf(user_File, "This is %d time, Used word: %s\n", time_guessed, used_words[i]);
-            printf("You have guessed %d times, you still have %d times left", time_guessed, NUM_OF_CHANCE - time_guessed);
-            printf("\n");
+            printf("You have guessed %d times, you still have %d times left\n", time_guessed, NUM_OF_CHANCE - time_guessed);
             if (strncmp(secret_word, guess, 5) == 0) {
                 printf("Nice job, you win!!!\n");
                 win_time += 1;
                 has_winner = true;
-                fprintf(user_File, "win/lose: %d / %d", win_time, lose_time);
+                time_tried++;
+                fprintf(user_File, "win/lose: %d / %d\n", win_time, lose_time);
                 break;
             }
         }
         if ((NUM_OF_CHANCE == 6) && (has_winner == false)) {
             printf("Sorry you lose, you have used all you chances :(\nThe correct word is: %s", secret_word);
+            lose_time += 1;
+            time_tried++;
+            fprintf(user_File, "\nwin/lose: %d / %d\n", win_time, lose_time);
         }
-        lose_time += 1;
-        fprintf(user_File, "\nwin/lose: %d / %d", win_time, lose_time);
         printf("Would you like to play again(Y/N)? ");
-        scanf(" %c", userInput);
+        scanf(" %s", userInput);
         fclose(user_File);
-    } while (*userInput == 'Y' || *userInput == 'y');
+    } while (strcmp(userInput, "Y") == 0 || strcmp(userInput, "y") == 0 );
 }
