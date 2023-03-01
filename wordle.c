@@ -65,7 +65,7 @@ int main(void) {
             exit(EXIT_FAILURE);
         }
 
-        /* overwrite or append according unber of tries user used */
+        /* overwrite or append according number of tries user used */
         if (time_tried == 0) {
             user_File = fopen(name, "w");
         } else {
@@ -83,9 +83,10 @@ int main(void) {
         }
         fclose(file);
         /* pick one word randomly */
+        srand(time(NULL));
         int num = (rand() % (NUM_WORDS + 1));
         strcpy(secret_word, wordList[num]);
-
+        printf("%s", secret_word);
         char used_words[NUM_OF_CHANCE][WORD_SIZE];
         time_guessed = 0;
         has_winner = false;
