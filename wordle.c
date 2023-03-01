@@ -86,7 +86,6 @@ int main(void) {
         srand(time(NULL));
         int num = (rand() % (NUM_WORDS + 1));
         strcpy(secret_word, wordList[num]);
-        printf("%s", secret_word);
         char used_words[NUM_OF_CHANCE][WORD_SIZE];
         time_guessed = 0;
         has_winner = false;
